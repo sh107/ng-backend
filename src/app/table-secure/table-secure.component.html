@@ -1,0 +1,72 @@
+<h1>Patient Table</h1>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="input-group">
+      <input #myInput type="text" class="form-control" placeholder="Search by Last Name" (input)="getPatientsWithSearch(myInput.value)">
+      <span class="input-group-btn">
+        <button class="btn btn-secondary" type="button" (click)="myInput.value='';initialise()">Clear</button>
+      </span>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Last Name
+        <a (click)="getPatientsBySorting('lastName ASC')">▲</a>
+        <a (click)="getPatientsBySorting('lastName DESC')">▼</a>
+      </th>
+      <th>First Name
+        <a (click)="getPatientsBySorting('firstName ASC')">▲</a>
+        <a (click)="getPatientsBySorting('firstName DESC')">▼</a>
+      </th>
+      <th>Date of Birth
+        <a (click)="getPatientsBySorting('dateOfBirth ASC')">▲</a>
+        <a (click)="getPatientsBySorting('dateOfBirth DESC')">▼</a>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let patient of patients">
+      <td><a [routerLink]="['/table-secure', patient['identifiers'][1]['value']]">{{ patient['lastName'] }}</a></td>
+      <td>{{ patient['firstName'] }}</td>
+      <td>{{ patient['dateOfBirth'] | date: 'dd MMM yyyy' }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<nav>
+  <ul class="pagination">
+    <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
+      <a class="page-link" (click)="getPatientsWithOffset(currentPage - 1)" tabindex="-1">Previous</a>
+    </li>
+    <li class="page-item" *ngIf="currentPage !== 1">
+      <a class="page-link" (click)="getPatientsWithOffset(1)">{{ 1 }}</a>
+    </li>
+    <li class="page-item" *ngIf="currentPage > 3">
+      <a class="page-link">...</a>
+    </li>
+    <li class="page-item" *ngIf="currentPage > 2">
+      <a class="page-link" (click)="getPatientsWithOffset(currentPage - 1)">{{ currentPage -1 }}</a>
+    </li>
+    <li class="page-item active">
+      <a class="page-link" (click)="getPatientsWithOffset(currentPage)">{{ currentPage }}</a>
+    </li>
+    <li class="page-item" *ngIf="currentPage < (totalPages - 1)">
+      <a class="page-link" (click)="getPatientsWithOffset(currentPage + 1)">{{ currentPage + 1 }}</a>
+    </li>
+
+    <li class="page-item" *ngIf="currentPage < (totalPages - 2)">
+      <a class="page-link">...</a>
+    </li>
+    <li class="page-item" *ngIf="currentPage !== totalPages">
+      <a class="page-link" (click)="getPatientsWithOffset(lastPage)">{{ lastPage }}</a>
+    </li>
+    <li class="page-item" [ngClass]="{'disabled': currentPage === lastPage}">
+      <a class="page-link" (click)="getPatientsWithOffset(currentPage + 1)">Next</a>
+    </li>
+  </ul>
+</nav>
+
